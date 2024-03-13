@@ -8,7 +8,7 @@ type EventListProps = {
 const EventList = ({event}: EventListProps) => {
   return (
     <View style={styles.container}>
-      <Image source={{uri:event.image}} style={styles.image}/>
+      <Image source={{uri:event.image}} style={styles.image} resizeMode='contain'/>
       <Text style={styles.title}>{event.clubname}</Text>
       <Text style={styles.venue}>{event.venue}</Text>
     </View>
@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 10,
     borderRadius: 10,
+    margin: 15
   },
   title: {
     fontSize: 20,
