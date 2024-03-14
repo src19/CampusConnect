@@ -1,17 +1,20 @@
-import { StyleSheet, Text, View, Image} from 'react-native'; 
+import { StyleSheet, Text, View, Image , Pressable} from 'react-native'; 
 import events from '@/assets/data/events';
 import { Event } from '@/types';
+import { Link } from 'expo-router';
 type EventListProps = {
     event: Event;
 }
 
 const EventList = ({event}: EventListProps) => {
   return (
-    <View style={styles.container}>
+    <Link href={`/event/${event.id}`} asChild>
+    <Pressable style={styles.container}>
       <Image source={{uri:event.image}} style={styles.image} resizeMode='contain'/>
       <Text style={styles.title}>{event.clubname}</Text>
       <Text style={styles.venue}>{event.venue}</Text>
-    </View>
+    </Pressable>
+    </Link>
   );
 };
 export default EventList;
