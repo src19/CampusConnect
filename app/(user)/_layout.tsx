@@ -32,7 +32,7 @@ export default function TabLayout() {
         options={{
           title: 'Events',
           headerShown : false,
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />,
           headerRight: () => (
             <Link href="/modal" asChild>
               <Pressable>
@@ -53,7 +53,7 @@ export default function TabLayout() {
         name="two"
         options={{
           title: 'Settings',
-          tabBarIcon: ({ color }) => <TabBarIcon name="sign-out" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />
     </Tabs>

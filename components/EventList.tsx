@@ -1,14 +1,16 @@
 import { StyleSheet, Text, View, Image , Pressable} from 'react-native'; 
 import events from '@/assets/data/events';
 import { Event } from '@/types';
-import { Link } from 'expo-router';
+import { Link, useSegments } from 'expo-router';
 type EventListProps = {
     event: Event;
 }
 
 const EventList = ({event}: EventListProps) => {
+  const segments = useSegments();
+  console.log(segments);
   return (
-    <Link href={`/event/${event.id}`} asChild>
+    <Link href={`/${segments[0]}/event/${event.id}`} asChild>
     <Pressable style={styles.container}>
       <Image source={{uri:event.image}} style={styles.image} resizeMode='contain'/>
       <Text style={styles.title}>{event.clubname}</Text>
