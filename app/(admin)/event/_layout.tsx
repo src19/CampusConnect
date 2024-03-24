@@ -11,7 +11,7 @@ export default function EventsStack () {
         options={{
             title:'Event',
             headerRight: () => (
-                <Link href ="/" asChild>
+                <Link href ="/(admin)/event/create" asChild>
                     <Pressable>
                         {({ pressed }) => (
                             <FontAwesome
