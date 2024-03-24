@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet, TextInput, Image, TouchableOpacity, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, TextInput, Image, TouchableOpacity, ScrollView , Alert} from 'react-native'
 import React, { useState } from 'react'
 import Colors from '@/constants/Colors';
 import * as ImagePicker from 'expo-image-picker';
-import { Stack } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
 
 const CreateProductScreen = () => {
     const [clubname, setclubname] = useState('');
@@ -10,6 +10,9 @@ const CreateProductScreen = () => {
     const [venue, setvenuename] = useState('');
     const [Errors,setErrors] = useState('');
     const [image, setImage] = useState<string | null>(null);
+    
+    const {id} = useLocalSearchParams();
+    const isupdating = !!id;
 
     const validInput = () => {
         setErrors('');
@@ -26,6 +29,38 @@ const CreateProductScreen = () => {
             return false;
         }
         return true;
+    };
+    
+    const onSubmit = () => {
+        if(isupdating){
+            onUpdate();
+        }
+        else{
+            onCreate();
+        }
+    };
+    const onDelete = () => {
+        console.warn('DELETE');
+    }
+    const confirmDelete = () => {
+        Alert.alert("Confirm", "Are you sure you want to delete this event", [
+            {
+                text: 'Cancel'
+            },
+            {
+                text: 'Delete',
+                style: 'destructive',
+                onPress: onDelete,
+
+            }
+        ])
+    }
+
+    const onUpdate = () => {
+        if(!validInput()) return;
+        console.warn("Updating event", eventname)
+        //store in database
+        resetFields();  
     };
 
     const onCreate = () => {
@@ -58,7 +93,7 @@ const CreateProductScreen = () => {
     return (
     <ScrollView>
     <View style={styles.container}>
-        <Stack.Screen options={{title: 'Create Event'}}/>
+        <Stack.Screen options={{title: isupdating ? 'Update Event' : 'Create Event'}}/>
         <Image 
         source={{uri: image || 'https://cdn.dribbble.com/users/55871/screenshots/2158022/media/95f08ed3812af28b93fa534fb5d277b3.jpg'}}
         style = {styles.imageplaceholder}
@@ -86,9 +121,10 @@ const CreateProductScreen = () => {
         onChangeText={setvenuename}
         />
         <Text style={{color: 'red'}}>{Errors}</Text>
-        <TouchableOpacity onPress={onCreate} style={styles.createbtn}>
-            <Text style={styles.btntext}>Create</Text>
+        <TouchableOpacity onPress={onSubmit} style={styles.createbtn}>
+            <Text style={styles.btntext}>{isupdating ? 'Update' : 'Create'}</Text>
         </TouchableOpacity>
+        {isupdating && <Text onPress={confirmDelete} style={styles.deltext}>Delete</Text>}
     </View>
     </ScrollView>
   )
@@ -117,6 +153,10 @@ const styles = StyleSheet.create({
     },
     btntext: {
         color:'white',
+        textAlign:'center'
+    },
+    deltext: {
+        color:'red',
         textAlign:'center'
     },
     imgbtn: {

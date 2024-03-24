@@ -13,7 +13,8 @@ const EventList = ({event}: EventListProps) => {
     <Link href={`/${segments[0]}/event/${event.id}`} asChild>
     <Pressable style={styles.container}>
       <Image source={{uri:event.image}} style={styles.image} resizeMode='contain'/>
-      <Text style={styles.title}>{event.clubname}</Text>
+      <Text style={styles.title}>{event.eventname}</Text>
+      <Text style={styles.venue}>{event.clubname}</Text>
       <Text style={styles.venue}>{event.venue}</Text>
     </Pressable>
     </Link>
