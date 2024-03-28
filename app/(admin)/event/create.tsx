@@ -3,6 +3,9 @@ import React, { useState } from 'react'
 import Colors from '@/constants/Colors';
 import * as ImagePicker from 'expo-image-picker';
 import { Stack, useLocalSearchParams } from 'expo-router';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { useInsertEvent } from '@/api/events';
+
 
 const CreateProductScreen = () => {
     const [clubname, setclubname] = useState('');
@@ -10,9 +13,18 @@ const CreateProductScreen = () => {
     const [venue, setvenuename] = useState('');
     const [Errors,setErrors] = useState('');
     const [image, setImage] = useState<string | null>(null);
+    const [date, setDate] = useState(new Date()); 
+    const [mode, setMode] = useState('date');
+    const [time, setTime] = useState('12:00:00 PM');
+    const [showPicker, setShowPicker] = useState(false); 
+
     
     const {id} = useLocalSearchParams();
     const isupdating = !!id;
+    const displayDate = date.toLocaleDateString(); 
+    const displayTime = date.toLocaleTimeString(); 
+
+    const { mutate: insertEvent } = useInsertEvent();
 
     const validInput = () => {
         setErrors('');
@@ -30,7 +42,17 @@ const CreateProductScreen = () => {
         }
         return true;
     };
-    
+    const onChange = (event, selectedValue) => {
+        const currentDate = selectedValue || date;
+        setDate(currentDate);
+        setShowPicker(false); 
+    };
+    const showMode = (currentMode) => {
+        setShowPicker(true);
+        setMode(currentMode);
+    };
+        
+
     const onSubmit = () => {
         if(isupdating){
             onUpdate();
@@ -63,10 +85,19 @@ const CreateProductScreen = () => {
         resetFields();  
     };
 
+    const eventData = {
+        eventname,
+        clubname,
+        venue,
+        date,
+        time,
+      };
+
     const onCreate = () => {
         if(!validInput()) return;
         console.warn("creating event", eventname)
         //store in database
+        insertEvent(eventData)
         resetFields();  
     };
 
@@ -120,6 +151,24 @@ const CreateProductScreen = () => {
         value={venue}
         onChangeText={setvenuename}
         />
+        <Text style = {styles.label}>Date</Text>
+        <Text onPress={() => showMode('date')} style={styles.input}>
+            {displayDate}
+        </Text>
+        <Text style = {styles.label}>Time</Text>
+        <Text onPress={() => showMode('time')} style={styles.input}>
+            {displayTime}
+        </Text>
+        {showPicker && (
+        <DateTimePicker
+        testID="dateTimePicker"
+        value={date}
+        mode={mode} 
+        is24Hour={true} 
+        display="default" // Can be "clock" or "spinner" (platform-dependent)
+        onChange={onChange}
+        />
+        )}
         <Text style={{color: 'red'}}>{Errors}</Text>
         <TouchableOpacity onPress={onSubmit} style={styles.createbtn}>
             <Text style={styles.btntext}>{isupdating ? 'Update' : 'Create'}</Text>

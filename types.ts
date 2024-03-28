@@ -1,5 +1,6 @@
 export type Event = {
     id: number;
+    eventname: string;
     image: string | null;
     clubname: string;
     venue: string;

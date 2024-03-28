@@ -25,26 +25,6 @@ export default function EventsStack () {
             )
         }}
         />
-
-        <Stack.Screen 
-        name="[id]" 
-        options={{
-            title:'Event',
-            headerRight: () => (
-                <Link href ="/(admin)/event/create" asChild>
-                    <Pressable>
-                        {({ pressed }) => (
-                            <FontAwesome
-                            name="pencil"
-                            size={25}
-                            color={Colors.light.tint}
-                            />
-                        )} 
-                    </Pressable>
-                </Link>
-            )
-        }}
-        />
     </Stack>
     )
 }

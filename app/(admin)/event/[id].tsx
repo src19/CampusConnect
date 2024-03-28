@@ -1,17 +1,20 @@
-import { View, Text, Pressable, Image, StyleSheet, ScrollView} from 'react-native'
+import { View, Text, Pressable, Image, StyleSheet, ScrollView, ActivityIndicator} from 'react-native'
 import React from 'react'
 import { Link, Stack, useLocalSearchParams } from 'expo-router'
 import { FontAwesome } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
 import events from '@/assets/data/events';
+import { useEvent } from '@/api/events';
 
 const EventDetails = () => {
-  const {id} = useLocalSearchParams();
-
-  const event = events.find((e) => e.id.toString() == id);
-
-  if(!event){
-    return <Text>Product not found</Text>;
+  const {id: idString} = useLocalSearchParams();
+  const id = parseFloat(typeof idString =='string' ? idString : idString[0]);
+  const {data: event, error, isLoading} = useEvent(id);
+  if(isLoading){
+    return <ActivityIndicator/>;
+  }
+  if(error){
+    return <Text>Failed to fetch event</Text>;
   }
   return (
     <View style = {styles.container}>
@@ -41,7 +44,9 @@ const EventDetails = () => {
       />
       <Text style={styles.description}>Event : {event.eventname}</Text>
       <Text style={styles.description}>ClubName : {event.clubname}</Text>
-      <Text style={styles.description}>Venue(Timings and location) : {event.venue}</Text>
+      <Text style={styles.description}>Venue(Location) : {event.venue}</Text>
+      <Text style={styles.description}>Date: {event.date}</Text>
+      <Text style={styles.description}>Time: {event.time}</Text>
     </View>
   );
 };

@@ -1,8 +1,17 @@
-import { View, FlatList} from 'react-native'; 
-import events from '@/assets/data/events';
+import { View, FlatList, Text, ActivityIndicator} from 'react-native'; 
 import EventList from '@/components/EventList';
+import { useEventsList } from '@/api/events';
 
 export default function EventsScreen() {
+
+  const {data: events,error,isLoading} = useEventsList();
+  if(isLoading){
+    return <ActivityIndicator/>;
+  }
+  if(error){
+    return <Text>Failed to fetch event</Text>;
+  }
+
   return(
       <FlatList 
       data={events}
