@@ -73,6 +73,18 @@ export const useUpdateEvent = () => {
         async onSuccess(_, data) {
             await queryClient.invalidateQueries(['events']);
             await queryClient.invalidateQueries(['events', data.id]);
-        }
+        },
     });
-}
+};
+
+export const useDeleteEvent = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        async mutationFn(id: number){
+            await supabase.from('events').delete().eq('id',id);
+        },
+        async onSuccess(_, data) {
+            await queryClient.invalidateQueries(['events']);
+        },
+    });
+};

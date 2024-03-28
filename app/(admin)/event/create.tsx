@@ -2,9 +2,9 @@ import { View, Text, StyleSheet, TextInput, Image, TouchableOpacity, ScrollView 
 import React, { useEffect, useState } from 'react'
 import Colors from '@/constants/Colors';
 import * as ImagePicker from 'expo-image-picker';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useEvent, useInsertEvent, useUpdateEvent } from '@/api/events';
+import { useDeleteEvent, useEvent, useInsertEvent, useUpdateEvent } from '@/api/events';
 
 
 const CreateProductScreen = () => {
@@ -18,6 +18,8 @@ const CreateProductScreen = () => {
     const [time, setTime] = useState(date.toLocaleTimeString());
     const [showPicker, setShowPicker] = useState(false); 
 
+    const router = useRouter();
+
     
     const { id: idString } = useLocalSearchParams();
     const id = parseFloat(typeof idString === 'string' ? idString : idString?.[0]);
@@ -30,6 +32,7 @@ const CreateProductScreen = () => {
     const { mutate: insertEvent } = useInsertEvent();
     const { mutate: updateEvent } = useUpdateEvent();
     const { data: updatedEvent, isLoading } = useEvent(id);
+    const {mutate: deleteEvent} = useDeleteEvent();
     useEffect(() => {
         if(updatedEvent) {
             seteventname(updatedEvent.eventname);
@@ -80,7 +83,12 @@ const CreateProductScreen = () => {
         }
     };
     const onDelete = () => {
-        console.warn('DELETE');
+        deleteEvent(id, {
+            onSuccess: () => {
+                resetFields();
+                router.replace('/(admin)');
+            }
+        })
     }
     const confirmDelete = () => {
         Alert.alert("Confirm", "Are you sure you want to delete this event", [
@@ -100,8 +108,12 @@ const CreateProductScreen = () => {
         if(!validInput()) return;
         console.warn("Updating event", eventname)
         //store in database
-        updateEvent({id,eventname,clubname,venue,date,time,})
-        resetFields();  
+        updateEvent({id,eventname,clubname,venue,date,time}, {
+            onSuccess: () => {
+                resetFields();
+                router.back();
+            }
+        }) 
     };
 
     const eventData = {
@@ -116,8 +128,12 @@ const CreateProductScreen = () => {
         if(!validInput()) return;
         console.warn("creating event", eventname)
         //store in database
-        insertEvent(eventData)
-        resetFields();  
+        insertEvent(eventData, {
+            onSuccess: () => {
+                resetFields();
+                router.back();
+            }
+        })
     };
 
     const pickImage = async () => {
