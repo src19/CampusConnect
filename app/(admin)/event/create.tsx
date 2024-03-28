@@ -4,7 +4,7 @@ import Colors from '@/constants/Colors';
 import * as ImagePicker from 'expo-image-picker';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useInsertEvent } from '@/api/events';
+import { useEvent, useInsertEvent, useUpdateEvent } from '@/api/events';
 
 
 const CreateProductScreen = () => {
@@ -19,12 +19,26 @@ const CreateProductScreen = () => {
     const [showPicker, setShowPicker] = useState(false); 
 
     
-    const {id} = useLocalSearchParams();
+    const { id: idString } = useLocalSearchParams();
+    const id = parseFloat(typeof idString === 'string' ? idString : idString?.[0]);
+
     const isupdating = !!id;
+
     const displayDate = date.toLocaleDateString(); 
     const displayTime = date.toLocaleTimeString(); 
 
     const { mutate: insertEvent } = useInsertEvent();
+    const { mutate: updateEvent } = useUpdateEvent();
+    const { data: updatedEvent, isLoading } = useEvent(id);
+    useEffect(() => {
+        if(updatedEvent) {
+            seteventname(updatedEvent.eventname);
+            setclubname(updatedEvent.clubname);
+            setvenuename(updatedEvent.venue);
+            setImage(updatedEvent.image);
+        }
+
+    }, [updatedEvent])
 
     useEffect(() => {
         setTime(date.toLocaleTimeString()); // Update time whenever date changes
@@ -86,6 +100,7 @@ const CreateProductScreen = () => {
         if(!validInput()) return;
         console.warn("Updating event", eventname)
         //store in database
+        updateEvent({id,eventname,clubname,venue,date,time,})
         resetFields();  
     };
 
