@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TextInput, Image, TouchableOpacity, ScrollView , Alert} from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Colors from '@/constants/Colors';
 import * as ImagePicker from 'expo-image-picker';
 import { Stack, useLocalSearchParams } from 'expo-router';
@@ -15,7 +15,7 @@ const CreateProductScreen = () => {
     const [image, setImage] = useState<string | null>(null);
     const [date, setDate] = useState(new Date()); 
     const [mode, setMode] = useState('date');
-    const [time, setTime] = useState('12:00:00 PM');
+    const [time, setTime] = useState(date.toLocaleTimeString());
     const [showPicker, setShowPicker] = useState(false); 
 
     
@@ -25,6 +25,10 @@ const CreateProductScreen = () => {
     const displayTime = date.toLocaleTimeString(); 
 
     const { mutate: insertEvent } = useInsertEvent();
+
+    useEffect(() => {
+        setTime(date.toLocaleTimeString()); // Update time whenever date changes
+      }, [date]);
 
     const validInput = () => {
         setErrors('');
