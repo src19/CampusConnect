@@ -81,7 +81,10 @@ export const useDeleteEvent = () => {
     const queryClient = useQueryClient();
     return useMutation({
         async mutationFn(id: number){
-            await supabase.from('events').delete().eq('id',id);
+            const {error} = await supabase.from('events').delete().eq('id',id);
+            if (error){
+                throw new Error(error.message);
+            }
         },
         async onSuccess(_, data) {
             await queryClient.invalidateQueries(['events']);
