@@ -51,13 +51,15 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <QueryProvider>
-        <Stack>
-          <Stack.Screen name="(user)" options={{ headerShown: false }} />
-          <Stack.Screen name="(admin)" options={{ headerShown: false }} />
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        </Stack>
-      </QueryProvider>
+        <AuthProvider>
+          <QueryProvider>
+            <Stack>
+              <Stack.Screen name="(user)" options={{ headerShown: false }} />
+              <Stack.Screen name="(admin)" options={{ headerShown: false }} />
+              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            </Stack>
+          </QueryProvider>
+        </AuthProvider>
     </ThemeProvider>
   );
 }

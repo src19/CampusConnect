@@ -1,8 +1,9 @@
 import { StyleSheet, Text, View, Image , Pressable} from 'react-native'; 
 import { Event } from '@/types';
 import { Link, useSegments } from 'expo-router';
+import { Tables } from '@/database.types';
 type EventListProps = {
-    event: Event;
+    event: Tables<'events'>;
 }
 
 const EventList = ({event}: EventListProps) => {
