@@ -5,11 +5,13 @@ import { FontAwesome } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
 import events from '@/assets/data/events';
 import { useEvent } from '@/api/events';
+import { useUpdateEventSubscription } from '@/api/events/subscriptions';
 
 const EventDetails = () => {
   const {id: idString} = useLocalSearchParams();
   const id = parseFloat(typeof idString =='string' ? idString : idString[0]);
   const {data: event, error, isLoading} = useEvent(id);
+  useUpdateEventSubscription();
   if(isLoading){
     return <ActivityIndicator/>;
   }

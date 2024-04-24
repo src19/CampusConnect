@@ -2,11 +2,14 @@ import { View, Text, Image, StyleSheet, ActivityIndicator} from 'react-native'
 import React from 'react'
 import { Stack, useLocalSearchParams } from 'expo-router'
 import { useEvent } from '@/api/events';
+import { useUpdateEventSubscription } from '@/api/events/subscriptions';
 
 const EventDetails = () => {
   const {id: idString} = useLocalSearchParams();
   const id = parseFloat(typeof idString =='string' ? idString : idString[0]);
   const {data: event, error, isLoading} = useEvent(id);
+  useUpdateEventSubscription();
+
   if(isLoading){
     return <ActivityIndicator/>;
   }
