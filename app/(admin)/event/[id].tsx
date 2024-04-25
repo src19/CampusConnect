@@ -6,6 +6,7 @@ import Colors from '@/constants/Colors';
 import events from '@/assets/data/events';
 import { useEvent } from '@/api/events';
 import { useUpdateEventSubscription } from '@/api/events/subscriptions';
+import RemoteImage from '@/components/RemoteImage';
 
 const EventDetails = () => {
   const {id: idString} = useLocalSearchParams();
@@ -39,8 +40,9 @@ const EventDetails = () => {
           }}
         />
       <Stack.Screen options={{title : event?.eventname}}/>
-      <Image 
-      source = {{uri: event.image || 'https://cdn.dribbble.com/users/55871/screenshots/2158022/media/95f08ed3812af28b93fa534fb5d277b3.jpg'}}
+      <RemoteImage 
+      path = {event?.image}
+      fallback='https://cdn.dribbble.com/users/55871/screenshots/2158022/media/95f08ed3812af28b93fa534fb5d277b3.jpg'
       style={styles.img}
       resizeMode='contain'
       />

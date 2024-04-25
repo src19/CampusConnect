@@ -2,6 +2,10 @@ import { StyleSheet, Text, View, Image , Pressable} from 'react-native';
 import { Event } from '@/types';
 import { Link, useSegments } from 'expo-router';
 import { Tables } from '@/database.types';
+import RemoteImage  from './RemoteImage';
+
+export const defaultImg = 'https://cdn.dribbble.com/users/55871/screenshots/2158022/media/95f08ed3812af28b93fa534fb5d277b3.jpg'
+
 type EventListProps = {
     event: Tables<'events'>;
 }
@@ -12,7 +16,11 @@ const EventList = ({event}: EventListProps) => {
   return (
     <Link href={`/${segments[0]}/event/${event.id}`} asChild>
     <Pressable style={styles.container}>
-      <Image source={{uri:event.image || 'https://cdn.dribbble.com/users/55871/screenshots/2158022/media/95f08ed3812af28b93fa534fb5d277b3.jpg'}} style={styles.image} resizeMode='contain'/>
+      <RemoteImage 
+      path={event.image}
+      fallback={defaultImg}
+      style={styles.image} 
+      resizeMode='contain'/>
       <Text style={styles.title}>{event.eventname}</Text>
       <Text style={styles.venue}>{event.clubname}</Text>
       <Text style={styles.venue}>{event.venue}</Text>

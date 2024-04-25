@@ -8,7 +8,7 @@ import { supabase } from '@/lib/supabase';
 export default function TabTwoScreen() {
   return (
     <View style={styles.container}>
-      {/* <Button title='Sign-Out' onPress={() => supabase.auth.signOut()}/> */}
+      <Button title='Sign-Out' onPress={async () => await supabase.auth.signOut()}/>
     </View>
   );
 }

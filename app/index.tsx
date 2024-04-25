@@ -28,7 +28,6 @@ import { supabase } from "@/lib/supabase";
             <Link href={'/(admin)'} asChild>
                 <Button title ='Admin'/>
             </Link>
-            <Button title='Sign-Out' onPress={() => supabase.auth.signOut()}/>
         </View>
         // <Redirect href={'/(admin)'} />
     );

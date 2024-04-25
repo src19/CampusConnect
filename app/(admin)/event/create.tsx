@@ -5,7 +5,11 @@ import * as ImagePicker from 'expo-image-picker';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useDeleteEvent, useEvent, useInsertEvent, useUpdateEvent } from '@/api/events';
-
+import * as FileSystem from 'expo-file-system';;
+import { supabase } from '@/lib/supabase';
+import { decode } from 'base64-arraybuffer';
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
 
 const CreateProductScreen = () => {
     const [clubname, setclubname] = useState('');
@@ -104,11 +108,14 @@ const CreateProductScreen = () => {
         ])
     }
 
-    const onUpdate = () => {
+    const onUpdate = async () => {
         if(!validInput()) return;
-        console.warn("Updating event", eventname)
+        
         //store in database
-        updateEvent({id,eventname,clubname,venue,date,time}, {
+        const imagePath = await uploadImage();
+        console.log("the value of image path is:", imagePath)
+
+        updateEvent({id,eventname,clubname,venue,date,time,image: imagePath}, {
             onSuccess: () => {
                 resetFields();
                 router.back();
@@ -116,19 +123,17 @@ const CreateProductScreen = () => {
         }) 
     };
 
-    const eventData = {
-        eventname,
-        clubname,
-        venue,
-        date,
-        time,
-      };
+    const onCreate = async () => {
+        if(!validInput()) {
+            return;
+        }
 
-    const onCreate = () => {
-        if(!validInput()) return;
-        console.warn("creating event", eventname)
-        //store in database
-        insertEvent(eventData, {
+        const imagePath = await uploadImage();
+        console.log("the value of image path is:", imagePath)
+
+        insertEvent(
+        {eventname, clubname, venue, date, time,  image: imagePath },
+        {
             onSuccess: () => {
                 resetFields();
                 router.back();
@@ -149,13 +154,35 @@ const CreateProductScreen = () => {
         if (!result.canceled) {
           setImage(result.assets[0].uri);
         }
-      };
+    };
 
     const resetFields = () => {
         setclubname('');
         seteventname('');
         setvenuename('');
     };
+
+    const uploadImage = async () => {
+        if (!image?.startsWith('file://')) {
+          return;
+        }
+      
+        const base64 = await FileSystem.readAsStringAsync(image, {
+          encoding: 'base64',
+        });
+        const filePath = `${uuidv4()}.png`;
+        const contentType = 'image/png';
+        const { data, error } = await supabase.storage
+        .from('event-images')
+        .upload(filePath, decode(base64), { contentType });
+
+        console.log(error);
+          
+        if (data) {
+          return data.path;
+        }
+    };
+
     return (
     <ScrollView>
     <View style={styles.container}>

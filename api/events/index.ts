@@ -33,6 +33,7 @@ export const useInsertEvent = () => {
     return useMutation({
         async mutationFn(data: any){
             const {error,data: newEvent} = await supabase.from('events').insert({
+                image: data.image,
                 eventname: data.eventname,
                 clubname: data.clubname,
                 venue: data.venue,
@@ -56,6 +57,7 @@ export const useUpdateEvent = () => {
     return useMutation({
         async mutationFn(data: any){
             const {error,data: updatedEvent} = await supabase.from('events').update({
+                image: data.image,
                 eventname: data.eventname,
                 clubname: data.clubname,
                 venue: data.venue,

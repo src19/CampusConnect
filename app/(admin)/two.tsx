@@ -10,10 +10,8 @@ export default function TabTwoScreen() {
   const {session, loading, isAdmin} = useAuth();
   return (
     <View style={styles.container}>
-      <Text>Hello</Text>
-      {/* <Button title='Sign-Out' onPress={() => supabase.auth.signOut()}/> */}
+      <Button title='Sign-Out' onPress={async () => await supabase.auth.signOut()}/>
     </View>
-
   );
 }
 
