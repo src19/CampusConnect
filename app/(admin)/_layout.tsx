@@ -19,10 +19,17 @@ function TabBarIcon(props: {
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const {isAdmin} = useAuth();
+  const {session} = useAuth();
 
   if(!isAdmin){
+    return <Redirect href={'/(user)/event'} />;
+  }
+
+  if(!session){
     return <Redirect href={'/'} />;
   }
+
+  const customActiveTintColor = '#ba64d9'
 
   return (
     <Tabs
@@ -31,7 +38,7 @@ export default function TabLayout() {
         tabBarInactiveTintColor: 'gainsboro',
         headerShown: useClientOnlyValue(false, true),
         tabBarStyle: {
-          backgroundColor:Colors.light.tint,
+          backgroundColor: customActiveTintColor,
         }
       }}>
       <Tabs.Screen name="index" options={{href:null}}/>

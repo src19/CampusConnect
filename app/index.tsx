@@ -1,7 +1,7 @@
 import { View , Text} from "@/components/Themed";
 import { ActivityIndicator, Button} from "react-native";
 import { Link, Redirect } from "expo-router";
-import React from "react";
+import React, { useEffect } from "react";
 import { useAuth } from "@/providers/AuthProvider";
 import { supabase } from "@/lib/supabase";
  
@@ -17,19 +17,11 @@ import { supabase } from "@/lib/supabase";
     }
 
     if(!isAdmin){
-        return <Redirect href={'/(user)'} />;
+        return <Redirect href={'/(user)/event'} />;
     }
-
+    
     return (
-        <View style ={{flex:1, justifyContent: 'center' , padding: 10}}>
-            <Link href={'/(user)'} asChild>
-                <Button title ="User" />
-            </Link>
-            <Link href={'/(admin)'} asChild>
-                <Button title ='Admin'/>
-            </Link>
-        </View>
-        // <Redirect href={'/(admin)'} />
+        <Redirect href={'/(admin)/event'} />
     );
  };
  

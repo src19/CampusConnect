@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/providers/AuthProvider";
 import { useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
 
 
@@ -37,8 +38,11 @@ export const useInsertEvent = () => {
                 eventname: data.eventname,
                 clubname: data.clubname,
                 venue: data.venue,
+                description: data.description,
                 date: data.date,
                 time: data.time,
+                reg_link: data.reg_link,
+                creator_id: data.creator_id,
             })
             .single();
             if (error){
@@ -61,8 +65,10 @@ export const useUpdateEvent = () => {
                 eventname: data.eventname,
                 clubname: data.clubname,
                 venue: data.venue,
+                description: data.description,
                 date: data.date,
                 time: data.time,
+                reg_link: data.reg_link,
             })
             .eq('id',data.id)
             .select()

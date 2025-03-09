@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Link, Stack } from 'expo-router'
 import Colors from '@/constants/Colors';
 import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/providers/AuthProvider';
 
 const signin = () => {
     const [email,setEmail] = useState('');
@@ -12,7 +13,10 @@ const signin = () => {
     async function Signinwithemail () {
         setLoading(true);
         const { error } = await supabase.auth.signInWithPassword( { email, password } );
-        if (error) Alert.alert(error.message);
+        if (error) {
+            Alert.alert('Sign In Failed', error.message);
+        }
+        
         setLoading(false);
     };
 
@@ -65,7 +69,7 @@ const styles = StyleSheet.create({
         padding: 10,
         marginTop:20,
         marginBottom:5,
-        backgroundColor: Colors.light.tint,
+        backgroundColor: '#ba64d9',
     },
     btntext: {
         color:'white',
@@ -73,7 +77,7 @@ const styles = StyleSheet.create({
     },
     textButton : {
         alignSelf: 'center',
-        color: Colors.light.tint,
+        color: '#ba64d9',
         marginVertical: 10
     }
 

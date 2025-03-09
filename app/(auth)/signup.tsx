@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
         padding: 10,
         marginTop:20,
         marginBottom:5,
-        backgroundColor: Colors.light.tint,
+        backgroundColor: '#ba64d9',
     },
     btntext: {
         color:'white',
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     },
     textButton : {
         alignSelf: 'center',
-        color: Colors.light.tint,
+        color: '#ba64d9',
         marginVertical: 10
     }
 

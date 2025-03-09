@@ -43,7 +43,7 @@ export default function onboarding() {
       marginTop: 6,
     },
     button: {
-      backgroundColor: '#9932CC',
+      backgroundColor: '#ba64d9',
       padding: 15,
       marginTop: 100,
       borderRadius: 100,

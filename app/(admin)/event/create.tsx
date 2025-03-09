@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, TextInput, Image, TouchableOpacity, ScrollView , Alert} from 'react-native'
 import React, { useEffect, useState } from 'react'
-import Colors from '@/constants/Colors';
 import * as ImagePicker from 'expo-image-picker';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -10,11 +9,17 @@ import { supabase } from '@/lib/supabase';
 import { decode } from 'base64-arraybuffer';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
+import { useAuth } from '@/providers/AuthProvider';
+
+const customActiveTintColor = '#ba64d9';
+
 
 const CreateProductScreen = () => {
     const [clubname, setclubname] = useState('');
     const [eventname, seteventname] = useState('');
     const [venue, setvenuename] = useState('');
+    const [description,setdescription] = useState('');
+    const [reg_link,setreglink] = useState('');
     const [Errors,setErrors] = useState('');
     const [image, setImage] = useState<string | null>(null);
     const [date, setDate] = useState(new Date()); 
@@ -23,6 +28,8 @@ const CreateProductScreen = () => {
     const [showPicker, setShowPicker] = useState(false); 
 
     const router = useRouter();
+    //const { user } = useAuth();
+    // const { currentUserId } = useAuth();
 
     
     const { id: idString } = useLocalSearchParams();
@@ -42,6 +49,8 @@ const CreateProductScreen = () => {
             seteventname(updatedEvent.eventname);
             setclubname(updatedEvent.clubname);
             setvenuename(updatedEvent.venue);
+            setdescription(updatedEvent.description);
+            setreglink(updatedEvent.reg_link);
             setImage(updatedEvent.image);
         }
 
@@ -63,6 +72,14 @@ const CreateProductScreen = () => {
         }
         if(!venue) {
             setErrors('Venue is required');
+            return false;
+        }
+        if(!description){
+            setErrors('Description is required');
+            return false;
+        }
+        if(!reg_link){
+            setErrors('Registration link is required');
             return false;
         }
         return true;
@@ -94,7 +111,18 @@ const CreateProductScreen = () => {
             }
         })
     }
-    const confirmDelete = () => {
+    const confirmDelete = async () => {
+        // const { data, error } = await supabase
+        // .from('events')
+        // .select('creator_id')
+        // .eq('id', id)
+        // .single();
+
+        // if (error || data.creator_id !== currentUserId) {
+        //     console.error('Unauthorized to delete this event');
+        //     return;
+        // }
+
         Alert.alert("Confirm", "Are you sure you want to delete this event", [
             {
                 text: 'Cancel'
@@ -111,11 +139,21 @@ const CreateProductScreen = () => {
     const onUpdate = async () => {
         if(!validInput()) return;
         
+        // const { data, error } = await supabase
+        // .from('events')
+        // .select('creator_id')
+        // .eq('id', id)
+        // .single();
+
+        // if (error || data.creator_id !== currentUserId) {
+        //     console.error('Unauthorized to update this event');
+        //     return;
+        // }
         //store in database
         const imagePath = await uploadImage();
         console.log("the value of image path is:", imagePath)
 
-        updateEvent({id,eventname,clubname,venue,date,time,image: imagePath}, {
+        updateEvent({id,eventname,clubname,venue,description,reg_link,date,time,image: imagePath}, {
             onSuccess: () => {
                 resetFields();
                 router.back();
@@ -132,7 +170,7 @@ const CreateProductScreen = () => {
         console.log("the value of image path is:", imagePath)
 
         insertEvent(
-        {eventname, clubname, venue, date, time,  image: imagePath },
+        {eventname, clubname, venue, description, reg_link, date, time,  image: imagePath},
         {
             onSuccess: () => {
                 resetFields();
@@ -160,6 +198,8 @@ const CreateProductScreen = () => {
         setclubname('');
         seteventname('');
         setvenuename('');
+        setdescription('');
+        setreglink('');
     };
 
     const uploadImage = async () => {
@@ -213,6 +253,20 @@ const CreateProductScreen = () => {
         value={venue}
         onChangeText={setvenuename}
         />
+        <Text style = {styles.label}>Description</Text>
+        <TextInput 
+        placeholder='Description' 
+        style={styles.input}
+        value={description}
+        onChangeText={setdescription}
+        />
+        <Text style = {styles.label}>Registration Link</Text>
+        <TextInput 
+        placeholder='URL' 
+        style={styles.input}
+        value={reg_link}
+        onChangeText={setreglink}
+        />
         <Text style = {styles.label}>Date</Text>
         <Text onPress={() => showMode('date')} style={styles.input}>
             {displayDate}
@@ -232,9 +286,11 @@ const CreateProductScreen = () => {
         />
         )}
         <Text style={{color: 'red'}}>{Errors}</Text>
-        <TouchableOpacity onPress={onSubmit} style={styles.createbtn}>
-            <Text style={styles.btntext}>{isupdating ? 'Update' : 'Create'}</Text>
-        </TouchableOpacity>
+        <View style={styles.registerview}>
+            <TouchableOpacity onPress={onSubmit} style={styles.createbtn}>
+                <Text style={styles.btnText}>{isupdating ? 'Update' : 'Post'}</Text>
+            </TouchableOpacity>
+        </View>
         {isupdating && <Text onPress={confirmDelete} style={styles.deltext}>Delete</Text>}
     </View>
     </ScrollView>
@@ -257,23 +313,32 @@ const styles = StyleSheet.create({
         color:'grey',
         fontSize:17
     },
-    createbtn:{
-        borderRadius:20,
-        padding: 10,
-        backgroundColor: Colors.light.tint,
+    createbtn: {
+        backgroundColor: '#ba64d9',
+        padding: 15,
+        borderRadius: 100,
+        width: '70%', // Adjust the width as needed
+        alignItems: 'center', 
     },
-    btntext: {
-        color:'white',
-        textAlign:'center'
+    btnText: {
+        color: '#ffffff', // Text color
+        textAlign: 'center',
+        fontWeight: 'bold',
+        fontSize: 16,
     },
     deltext: {
         color:'red',
         textAlign:'center'
     },
+    registerview: {
+        padding : 6,
+        alignItems: 'center',
+        
+    },
     imgbtn: {
         alignSelf: 'center',
         fontWeight: 'bold',
-        color: Colors.light.tint,
+        color: customActiveTintColor,
         marginVertical: 10
     },
     imageplaceholder: {

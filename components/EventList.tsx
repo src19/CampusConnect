@@ -1,5 +1,4 @@
-import { StyleSheet, Text, View, Image , Pressable} from 'react-native'; 
-import { Event } from '@/types';
+import { StyleSheet, Text, View, Image , Pressable} from 'react-native';
 import { Link, useSegments } from 'expo-router';
 import { Tables } from '@/database.types';
 import RemoteImage  from './RemoteImage';
@@ -21,11 +20,10 @@ const EventList = ({event}: EventListProps) => {
       fallback={defaultImg}
       style={styles.image} 
       resizeMode='contain'/>
-      <Text style={styles.title}>{event.eventname}</Text>
-      <Text style={styles.venue}>{event.clubname}</Text>
-      <Text style={styles.venue}>{event.venue}</Text>
-      <Text style={styles.venue}>{event.date}</Text>
-      <Text style={styles.venue}>{event.time}</Text>
+      <View style={styles.content}>
+        <Text style={styles.title}>{event.eventname}</Text>
+        <Text style={styles.venue}>{event.description}</Text>
+      </View>
     </Pressable>
     </Link>
   );
@@ -34,10 +32,17 @@ export default EventList;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor: '#fff', 
+    shadowColor: '#eee', // Adjust shadow color for lighter background
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
     padding: 10,
     borderRadius: 10,
-    margin: 15
+    margin: 15,
+  },
+  content: {
+    marginTop: 10, // Space between image and text content
   },
   title: {
     fontSize: 20,
@@ -46,15 +51,11 @@ const styles = StyleSheet.create({
   venue : {
     fontSize: 15,
     fontWeight: '500',
-    marginVertical: 10,
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+    marginVertical: 6,
   },
   image: {
     width: '100%',
-    aspectRatio: 1
+    aspectRatio: 1,
+    borderRadius: 10
   }
 });
